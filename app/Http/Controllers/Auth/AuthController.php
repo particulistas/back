@@ -8,10 +8,60 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Http\Request;
 use App\Models\User;
 
+/**
+ * @OA\OpenApi(
+ *   @OA\Info(
+ *     title="Nombre de tu API",
+ *     version="1.0.0",
+ *     description="Descripción de lo que hace tu API",
+ *     @OA\Contact(
+ *       email="tu-email@example.com"
+ *     )
+ *   ),
+ *   @OA\Server(
+ *     description="Servidor principal",
+ *     url="http://localhost:8000/api"
+ *   )
+ * )
+ * 
+ * @OA\Schema(
+ *   schema="User",
+ *   type="object",
+ *   description="User model",
+ *   @OA\Property(property="id", type="integer", description="ID of the user"),
+ *   @OA\Property(property="name", type="string", description="Name of the user"),
+ *   @OA\Property(property="email", type="string", description="Email address of the user")
+ * )
+ */
+
 class AuthController extends Controller
 {
 
-    //Valida y registra nuevo usuario
+
+    /**
+     * @OA\Post(
+     *   path="/v1/register",
+     *   summary="Register a new user",
+     *   tags={"Authentication"},
+     *   @OA\RequestBody(
+     *     @OA\JsonContent(
+     *       required={"name", "email", "password", "phone"},
+     *       @OA\Property(property="name", type="string"),
+     *       @OA\Property(property="email", type="string"),
+     *       @OA\Property(property="password", type="string"),
+     *       @OA\Property(property="phone", type="string")
+     *     )
+     *   ),
+     *   @OA\Response(
+     *     response=200,
+     *     description="User registered successfully"
+     *   ),
+     *   @OA\Response(
+     *     response=422,
+     *     description="Validation failed"
+     *   )
+     * )
+     */
     public function store(Request $request)
     {
 
@@ -51,8 +101,34 @@ class AuthController extends Controller
             'message' => 'Successfully created user!'
         ], 201);*/
     }
-    //POST
-    //Autentica un usuario
+
+     /**
+     * @OA\Post(
+     *   path="/v1/login",
+     *   summary="Authenticate user and return token",
+     *   tags={"Authentication"},
+     *   @OA\RequestBody(
+     *     @OA\JsonContent(
+     *       required={"email", "password"},
+     *       @OA\Property(property="email", type="string"),
+     *       @OA\Property(property="password", type="string")
+     *     )
+     *   ),
+     *   @OA\Response(
+     *     response=200,
+     *     description="Authentication successful",
+     *     @OA\JsonContent(
+     *       @OA\Property(property="token", type="string"),
+     *       @OA\Property(property="user", ref="#/components/schemas/User"),
+     *       @OA\Property(property="role", type="string")
+     *     )
+     *   ),
+     *   @OA\Response(
+     *     response=401,
+     *     description="Failed to authenticate"
+     *   )
+     * )
+     */
     public function login()
     {
         if (Auth::attempt(['email' => request('email'), 'password' => request('password')])) {
@@ -75,14 +151,40 @@ class AuthController extends Controller
             ], 401); 
         }
     }
-    //GET
-    //Muestra los datos de un usuario
-    public function show(Request $request)
+
+
+
+    /**
+     * @OA\Get(
+     *   path="/v1/users",
+     *   summary="Get list of users",
+     *   tags={"Users"},
+     *   @OA\Response(
+     *     response=200,
+     *     description="Successful operation",
+     *     @OA\JsonContent(
+     *       type="array",
+     *       @OA\Items(ref="#/components/schemas/User")
+     *     )
+     *   )
+     * )
+     */
+    public function getUsers(Request $request)
     {
         return response()->json($request->user());
     }
-    //DELETE
-    //Elimina la información del usuario
+
+    /**
+     * @OA\Delete(
+     *   path="/v1/logout",
+     *   summary="Log out a user",
+     *   tags={"Authentication"},
+     *   @OA\Response(
+     *     response=200,
+     *     description="Logged out successfully"
+     *   )
+     * )
+     */
     public function destroy(Request $request)
     {
         if (Auth::user()) {
