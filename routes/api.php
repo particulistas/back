@@ -19,7 +19,7 @@ Route::group(['prefix' => 'v1'], function () {
 
         Route::post('logout', [AuthController::class, 'destroy']);
 
-        Route::prefix('users')->group(function () {
+        Route::prefix('user')->group(function () {
             Route::get('/', [AuthController::class, 'getUsers']);
         });
     });
