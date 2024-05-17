@@ -71,7 +71,7 @@ class UsersSeeders extends Seeder
 
             $userclient->assignRole('client');
 
-            $userClientProfile = $userClient->profile()->updateOrCreate([
+            $userClientProfile = $userclient->profile()->updateOrCreate([
                 'firstname'  => 'Usuario Client',
                 'lastname'   => 'Usuario Cliente',
                 'gender'     => 'F',
