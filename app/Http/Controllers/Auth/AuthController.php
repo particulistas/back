@@ -2,11 +2,15 @@
 
 namespace App\Http\Controllers\Auth;
 
+use Illuminate\Validation\ValidationException;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Spatie\Permission\Models\Role;
 use Illuminate\Http\Request;
 use App\Models\User;
+use Carbon\Carbon;
+
 
 /**
  * @OA\OpenApi(
@@ -67,31 +71,38 @@ class AuthController extends Controller
 
         try {
         $validatedData = $request->validate([
-            'name' => 'required|string',
+            'firstname' => 'required|string',
+            'lastname' => 'required|string',
             'email' => 'required|string|email|unique:users',
-            'password' => 'required|string',
-            'phone' => 'required|string'
+            'password' => 'required|string|confirmed'
         ]);
         
-        // Lógica de registro aquí...
-
-        return response()->json(['message' => 'User registered successfully!'], 200);
-    } catch (ValidationException $e) {
-        return response()->json($e->errors(), 422);
-    }
-    /*
         $user = $user_token = null;
+
         $user = User::create([
-            'name' => $request->name,
+            'name' => $request->firstname." ".$request->lastname,
             'email' => $request->email,
-            'phone' => $request->phone,
             'password' => hash::make($request->password)
         ]);
-        
-        if (Auth::attempt(['email' => $request->email, 'password' => $request->password])) {
 
-            $user = User::find(Auth::user()->id);
+        $user->assignRole('client');
+        
+        $user->profile()->updateOrCreate([
+            'firstname'  => $request->firstname,
+            'lastname'   => $request->lastname,
+            'phone'     => $request->phone,
+            'created_at' => Carbon::now(),
+            'updated_at' => Carbon::now(),
+        ]);
+
+        if (Auth::guard('web')->attempt(['email' => $request->email, 'password' => $request->password])) {
+            $user = Auth::guard('web')->user();
             $user_token['token'] = $user->createToken('appToken')->accessToken;
+        } else {
+            return response()->json([
+                'success' => false,
+                'message' => 'Invalid credentials'
+            ], 401);
         }
 
         return response()->json([
@@ -99,7 +110,14 @@ class AuthController extends Controller
             'token' => $user_token,
             'user' => $user,
             'message' => 'Successfully created user!'
-        ], 201);*/
+        ], 201);
+
+        return response()->json(['message' => 'User registered successfully!'], 200);
+    } catch (ValidationException $e) {
+        return response()->json($e->errors(), 422);
+    }
+    
+        
     }
 
      /**
@@ -129,11 +147,17 @@ class AuthController extends Controller
      *   )
      * )
      */
-    public function login()
+    public function login(Request $request)
     {
-        if (Auth::attempt(['email' => request('email'), 'password' => request('password')])) {
+
+        $validatedData = $request->validate([
+            'email' => 'required|string|email',
+            'password' => 'required|string'
+        ]);
+
+        if (Auth::guard('web')->attempt(['email' => $request->email, 'password' => $request->password])) {
              // successfull authentication
-            $user = User::find(Auth::user()->id);
+            $user = Auth::guard('web')->user();
             $user_token['token'] = $user->createToken('appToken')->accessToken;
             $user2 = User::where('id', $user->id)->with('roles')->first();
 
