@@ -6,7 +6,10 @@ use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 use Spatie\Permission\Models\Role;
+use Spatie\Permission\Models\Permission;
+use Illuminate\Support\Facades\Hash;
 use App\Models\User;
+use App\Models\profile;
 use Carbon\Carbon;
 
 class UsersSeeders extends Seeder
@@ -16,47 +19,65 @@ class UsersSeeders extends Seeder
      */
     public function run(): void
     {
-        $roles = [
-            [
-                'name' => 'admin'
-            ],
-            [
-                'name' => 'client'
-            ],
-        ];
+            $roles = [
+                [
+                    'name' => 'admin'
+                ],
+                [
+                    'name' => 'client'
+                ],
+            ];
 
-        DB::transaction(function () use ($roles) {
-            foreach ($roles as $role) {
-                Role::updateOrCreate(
-                    ['name' => $role['name']],
-                    [
-                        'guard_name'  => 'api'
-                    ]
-                );
-            }
+            DB::transaction(function () use ($roles) {
+                foreach ($roles as $role) {
+                    Role::updateOrCreate(
+                        ['name' => $role['name']],
+                        [
+                            'guard_name'  => 'api'
+                        ]
+                    );
+                }
 
-        });
+            });
 
-        $userAdmin = User::updateOrCreate(
-            ['email' => 'admin@admin.com'],
-            [
-                'name' => 'Admin',
-                'password' => Hash::make('usuario12345'),
-                'created_at' => Carbon::now()
-            ]
-        );
+            $userAdmin = User::updateOrCreate(
+                ['email' => 'admin@admin.com'],
+                [
+                    'name' => 'Admin',
+                    'password' => Hash::make('usuario12345'),
+                    'created_at' => Carbon::now()
+                ]
+            );
 
-        $userAdmin->assignRole('admin');
+            $userAdmin->assignRole('admin');
 
-        $userclient = User::updateOrCreate(
-            ['email' => 'user@email.com'],
-            [
-                'name' => 'User Name',
-                'password' => Hash::make('usuario12345'),
-                'created_at' => Carbon::now()
-            ]
-        );
+            $userAdminProfile = $userAdmin->profile()->updateOrCreate([
+                'firstname'  => 'Usuario Admin',
+                'lastname'   => 'Administrador principal',
+                'gender'     => 'M',
+                'phone'     => '+555555555',
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now(),
+            ]);
 
-        $userclient->assignRole('client');
+            $userclient = User::updateOrCreate(
+                ['email' => 'user@email.com'],
+                [
+                    'name' => 'User Name',
+                    'password' => Hash::make('usuario12345'),
+                    'created_at' => Carbon::now()
+                ]
+            );
+
+            $userclient->assignRole('client');
+
+            $userClientProfile = $userClient->profile()->updateOrCreate([
+                'firstname'  => 'Usuario Client',
+                'lastname'   => 'Usuario Cliente',
+                'gender'     => 'F',
+                'phone'     => '+555555555',
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now(),
+            ]);
     }
 }
