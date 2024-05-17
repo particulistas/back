@@ -73,6 +73,7 @@ class AuthController extends Controller
         $validatedData = $request->validate([
             'firstname' => 'required|string',
             'lastname' => 'required|string',
+            'phone' => 'required|string',
             'email' => 'required|string|email|unique:users',
             'password' => 'required|string|confirmed'
         ]);
@@ -195,7 +196,7 @@ class AuthController extends Controller
      */
     public function getUsers(Request $request)
     {
-        return response()->json($request->user());
+        return response()->json($request->user()->load('profile'));
     }
 
     /**
