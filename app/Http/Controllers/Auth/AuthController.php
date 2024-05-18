@@ -15,11 +15,11 @@ use Carbon\Carbon;
 /**
  * @OA\OpenApi(
  *   @OA\Info(
- *     title="Nombre de tu API",
+ *     title="Endpoint PArticulistas",
  *     version="1.0.0",
- *     description="Descripción de lo que hace tu API",
+ *     description="Endpoint donde se desarrolla todo el back de Particulistas",
  *     @OA\Contact(
- *       email="tu-email@example.com"
+ *       email="info@particulistas.com"
  *     )
  *   ),
  *   @OA\Server(
@@ -44,7 +44,7 @@ class AuthController extends Controller
 
     /**
      * @OA\Post(
-     *   path="/v1/register",
+     *   path="/api/v1/register",
      *   summary="Register a new user",
      *   tags={"Authentication"},
      *   @OA\RequestBody(
@@ -123,7 +123,7 @@ class AuthController extends Controller
 
      /**
      * @OA\Post(
-     *   path="/v1/login",
+     *   path="/api/v1/login",
      *   summary="Authenticate user and return token",
      *   tags={"Authentication"},
      *   @OA\RequestBody(
@@ -181,7 +181,7 @@ class AuthController extends Controller
 
     /**
      * @OA\Get(
-     *   path="/v1/users",
+     *   path="/api/v1/users",
      *   summary="Get list of users",
      *   tags={"Users"},
      *   @OA\Response(
@@ -201,7 +201,7 @@ class AuthController extends Controller
 
     /**
      * @OA\Delete(
-     *   path="/v1/logout",
+     *   path="/api/v1/logout",
      *   summary="Log out a user",
      *   tags={"Authentication"},
      *   @OA\Response(
