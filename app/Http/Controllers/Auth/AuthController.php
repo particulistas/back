@@ -72,7 +72,7 @@ class AuthController extends Controller
         try {
         $validatedData = $request->validate([
             'firstname' => 'required|string',
-            'lastname' => 'required|string',
+            'lastname' => 'string|nullable',
             'phone' => 'required|string',
             'email' => 'required|string|email|unique:users',
             'password' => 'required|string|confirmed'
