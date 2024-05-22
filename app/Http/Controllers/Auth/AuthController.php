@@ -6,7 +6,10 @@ use Illuminate\Validation\ValidationException;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Mail;
 use Spatie\Permission\Models\Role;
+use App\Mail\Auth\verifiedMailer;
+use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use App\Models\User;
 use Carbon\Carbon;
@@ -69,7 +72,6 @@ class AuthController extends Controller
     public function store(Request $request)
     {
 
-        try {
         $validatedData = $request->validate([
             'firstname' => 'required|string',
             'lastname' => 'required|string',
@@ -79,10 +81,12 @@ class AuthController extends Controller
         ]);
         
         $user = $user_token = null;
+        $randomCode = Str::random(32);
 
         $user = User::create([
             'name' => $request->firstname." ".$request->lastname,
             'email' => $request->email,
+            'remember_token' => $randomCode,
             'password' => hash::make($request->password)
         ]);
 
@@ -106,6 +110,8 @@ class AuthController extends Controller
             ], 401);
         }
 
+        Mail::to($request->email)->send(new verifiedMailer($user));
+
         return response()->json([
             'success' => true,
             'token' => $user_token,
@@ -114,9 +120,6 @@ class AuthController extends Controller
         ], 201);
 
         return response()->json(['message' => 'User registered successfully!'], 200);
-    } catch (ValidationException $e) {
-        return response()->json($e->errors(), 422);
-    }
     
         
     }
@@ -220,5 +223,58 @@ class AuthController extends Controller
                 'message' => 'Logged out successfully',
             ], 200);
         }
+    }
+
+    /**
+    * @OA\Post(
+    *   path="/api/v1/verified/{token}",
+    *   summary="Verify user email",
+     *   tags={"Authentication"},
+    *   @OA\Parameter(
+    *     name="token",
+    *     in="path",
+    *     required=true,
+    *     @OA\Schema(type="string"),
+    *     description="Verification token"
+    *   ),
+    *   @OA\Response(
+    *     response=200,
+    *     description="Correo verificado exitosamente",
+    *     @OA\JsonContent(
+    *       @OA\Property(property="success", type="boolean"),
+    *       @OA\Property(property="message", type="string")
+    *     )
+    *   ),
+    *   @OA\Response(
+    *     response=400,
+    *     description="Error al verificar, token no válido",
+    *     @OA\JsonContent(
+    *       @OA\Property(property="success", type="boolean"),
+    *       @OA\Property(property="message", type="string")
+    *     )
+    *   )
+    * )
+    */
+    
+    public function verifiedMail($token)
+    {
+        $user = User::where('remember_token', $token)->first();
+        
+        if ($user) {
+
+            $user->remember_token = null;
+            $user->email_verified_at = Carbon::now();
+            $user->save();
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Correo verificado exitosamente',
+            ], 200);
+        }
+
+        return response()->json([
+            'success' => false,
+            'message' => 'Error al verificar, token no válido',
+        ], 400);
     }
 }
