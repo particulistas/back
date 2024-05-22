@@ -22,7 +22,7 @@ class verifiedMailer extends Mailable
     {
         $this->user = $user;
         $this->appName = config('app.name');
-        $this->verificationUrl = route('verified.mail', ['token' => $user->remember_token]);
+        $this->verificationUrl = config('app.urlFront'); //agregar ruta aqui
     }
 
     /**

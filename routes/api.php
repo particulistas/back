@@ -15,6 +15,8 @@ Route::group(['prefix' => 'v1'], function () {
     Route::post('/login', [AuthController::class, 'login']);
     Route::post('/signup', [AuthController::class, 'store']);
     Route::post('/verified/{token}', [AuthController::class, 'verifiedMail'])->name('verified.mail');
+    Route::post('/recovery/password/', [AuthController::class, 'recoveryPassword']);
+    Route::post('/new/password/{token}', [AuthController::class, 'recoveryToken']);
 
     Route::middleware('auth:api')->group(function () {
 

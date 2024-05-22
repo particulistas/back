@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
 use Spatie\Permission\Models\Role;
 use App\Mail\Auth\verifiedMailer;
+use App\Mail\Auth\recoverPasswordMailer;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use App\Models\User;
@@ -255,7 +256,7 @@ class AuthController extends Controller
     *   )
     * )
     */
-    
+
     public function verifiedMail($token)
     {
         $user = User::where('remember_token', $token)->first();
@@ -275,6 +276,30 @@ class AuthController extends Controller
         return response()->json([
             'success' => false,
             'message' => 'Error al verificar, token no válido',
+        ], 400);
+    }
+
+    public function recoveryPassword(Request $request)
+    {
+        $user = User::where('email', $request->email)->first();
+        
+        if ($user) {
+            $randomCode = Str::random(32);
+
+            $user->remember_token = $randomCode;
+            $user->save();
+
+            Mail::to($request->email)->send(new recoverPasswordMailer($user));
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Correo enviado correctamente',
+            ], 200);
+        }
+
+        return response()->json([
+            'success' => false,
+            'message' => 'Email no válido',
         ], 400);
     }
 }
