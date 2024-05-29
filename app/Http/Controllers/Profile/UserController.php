@@ -8,6 +8,39 @@ use App\Models\Profile;
 
 class UserController extends Controller
 {
+
+    /**
+    * @OA\Patch(
+    *   path="/api/v1/update-profile",
+    *   summary="Update user profile",
+    *   tags={"Users"},
+    *   @OA\RequestBody(
+    *     @OA\JsonContent(
+    *       @OA\Property(property="firstname", type="string"),
+    *       @OA\Property(property="lastname", type="string"),
+    *       @OA\Property(property="phone", type="string"),
+    *       @OA\Property(property="gender", type="string")
+    *     )
+    *   ),
+    *   @OA\Response(
+    *     response=200,
+    *     description="Profile updated successfully",
+    *     @OA\JsonContent(
+    *       @OA\Property(property="success", type="boolean"),
+    *       @OA\Property(property="message", type="string")
+    *     )
+    *   ),
+    *   @OA\Response(
+    *     response=400,
+    *     description="Invalid input",
+    *     @OA\JsonContent(
+    *       @OA\Property(property="success", type="boolean"),
+    *       @OA\Property(property="message", type="string")
+    *     )
+    *   )
+    * )
+    */
+    
     public function updateProfile(Request $request)
     {
         $user = $request->user();
