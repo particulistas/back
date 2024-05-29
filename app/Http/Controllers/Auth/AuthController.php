@@ -382,4 +382,67 @@ class AuthController extends Controller
             'message' => __('auth.sendEmailFailed'),
         ], 400);
     }
+
+    /**
+    * @OA\Post(
+    *   path="/api/v1/new-password/{token}",
+    *   summary="Set a new password using a token",
+    *   tags={"Authentication"},
+    *   @OA\Parameter(
+    *     name="token",
+    *     in="path",
+    *     required=true,
+    *     @OA\Schema(type="string"),
+    *     description="Password recovery token"
+    *   ),
+    *   @OA\RequestBody(
+    *     @OA\JsonContent(
+    *       required={"password", "password_confirmation"},
+    *       @OA\Property(property="password", type="string"),
+    *       @OA\Property(property="password_confirmation", type="string")
+    *     )
+    *   ),
+    *   @OA\Response(
+    *     response=200,
+    *     description="Password changed successfully",
+    *     @OA\JsonContent(
+    *       @OA\Property(property="success", type="boolean"),
+    *       @OA\Property(property="message", type="string")
+    *     )
+    *   ),
+    *   @OA\Response(
+    *     response=400,
+    *     description="Invalid token or other error",
+    *     @OA\JsonContent(
+    *       @OA\Property(property="success", type="boolean"),
+    *       @OA\Property(property="message", type="string")
+    *     )
+    *   )
+    * )
+    */
+    
+    public function newPassword($token)
+    {
+        $validatedData = $request->validate([
+            'password' => 'required|string|confirmed'
+        ]);
+
+        $user = User::where('remember_token', $token)->first();
+
+        if ($user) {
+            $user->password = hash::make($request->password);
+            $user->remember_token = null;
+            $user->save();
+
+            return response()->json([
+                'success' => true,
+                'message' => __('auth.passwordSuccess'),
+            ], 200);
+        }
+
+        return response()->json([
+            'success' => false,
+            'message' => __('auth.tokenFailed'),
+        ], 400);
+    }
 }

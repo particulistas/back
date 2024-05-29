@@ -22,6 +22,7 @@ class recoverPasswordMailer extends Mailable
     {
         $this->user = $user;
         $this->appName = config('app.name');
+        $this->verificationUrl = config('app.urlFront').'/'.$user->remember_token; //agregar ruta aqui, pero se debe enviar con el remember_token
     }
 
     /**
@@ -40,7 +41,7 @@ class recoverPasswordMailer extends Mailable
     public function content(): Content
     {
         return new Content(
-            view: 'view.name',
+            view: 'mails.password',
         );
     }
 
@@ -61,6 +62,7 @@ class recoverPasswordMailer extends Mailable
                     ->with([
                         'user' => $this->user,
                         'appName' => $this->appName,
+                        'verificationUrl' => $this->verificationUrl,
                     ]);
     }
 }

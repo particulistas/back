@@ -1,6 +1,6 @@
 <div>
     <h1 style="font-family: 'Haas Grot Text R Web', 'Helvetica Neue', Helvetica, Arial, sans-serif; font-size: 24px; font-weight: bold;">
-        A pedido restaurar su contrseña 
+        A pedido restaurar su contraseña 
     </h1>
     
     <p style="font-family: 'Haas Grot Text R Web', 'Helvetica Neue', Helvetica, Arial, sans-serif; font-size: 14px;">

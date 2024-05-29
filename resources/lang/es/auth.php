@@ -10,4 +10,5 @@ return [
     'tokenFailed' => 'Error al verificar, token no válido',
     'sendEmailSuccess' => 'Mensaje enviado satisfactoriamente',
     'sendEmailFailed' => 'Email no válido',
+    'passwordSuccess' => 'Contraseña cambiada correctamente',
 ];

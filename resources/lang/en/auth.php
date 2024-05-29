@@ -10,4 +10,5 @@ return [
     'tokenFailed' => 'Verification failed, invalid token',
     'sendEmailSuccess' => 'Message sent successfully',
     'sendEmailFailed' => 'Invalid email',
+    'passwordSuccess' => 'Password changed successfully',
 ];
