@@ -420,8 +420,8 @@ class AuthController extends Controller
     *   )
     * )
     */
-    
-    public function newPassword($token)
+
+    public function newPassword(Request $request, $token)
     {
         $validatedData = $request->validate([
             'password' => 'required|string|confirmed'
