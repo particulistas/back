@@ -107,7 +107,7 @@ class AuthController extends Controller
         } else {
             return response()->json([
                 'success' => false,
-                'message' => 'Invalid credentials'
+                'message' => __('auth.failed')
             ], 401);
         }
 
@@ -117,10 +117,10 @@ class AuthController extends Controller
             'success' => true,
             'token' => $user_token,
             'user' => $user,
-            'message' => 'Successfully created user!'
+            'message' => __('auth.successCreate')
         ], 201);
 
-        return response()->json(['message' => 'User registered successfully!'], 200);
+        return response()->json(['message' => __('auth.successCreate')], 200);
     
         
     }
@@ -176,7 +176,7 @@ class AuthController extends Controller
             // failure to authenticate
             return response()->json([
                 'success' => false,
-                'message' => 'Failed to authenticate.',
+                'message' => __('auth.failed'),
             ], 401); 
         }
     }
@@ -221,7 +221,7 @@ class AuthController extends Controller
 
             return response()->json([
                 'success' => true,
-                'message' => 'Logged out successfully',
+                'message' => __('auth.logout'),
             ], 200);
         }
     }
@@ -269,16 +269,96 @@ class AuthController extends Controller
 
             return response()->json([
                 'success' => true,
-                'message' => 'Correo verificado exitosamente',
+                'message' => __('auth.emailVerified'),
             ], 200);
         }
 
         return response()->json([
             'success' => false,
-            'message' => 'Error al verificar, token no válido',
+            'message' => __('auth.tokenFailed'),
         ], 400);
     }
 
+    /**
+    * @OA\Post(
+    *   path="/api/v1/resend-verification",
+    *   summary="Resend verification email",
+    *   tags={"Authentication"},
+    *   @OA\RequestBody(
+    *     @OA\JsonContent(
+    *       required={"email"},
+    *       @OA\Property(property="email", type="string")
+    *     )
+    *   ),
+    *   @OA\Response(
+    *     response=200,
+    *     description="Email de verificación enviado exitosamente",
+    *     @OA\JsonContent(
+    *       @OA\Property(property="success", type="boolean"),
+    *       @OA\Property(property="message", type="string")
+    *     )
+    *   ),
+    *   @OA\Response(
+    *     response=400,
+    *     description="Solicitud no válida",
+    *     @OA\JsonContent(
+    *       @OA\Property(property="success", type="boolean"),
+    *       @OA\Property(property="message", type="string")
+    *     )
+    *   )
+    * )
+    */
+
+    public function resendMailVerified(Request $request)
+    {
+        $validatedData = $request->validate([
+            'email' => 'required|string|email',
+        ]);
+
+        $randomCode = Str::random(32);
+        
+        $user = User::where('email', $request->email)->first();
+        $user->remember_token = $randomCode;
+        $user->save();
+        
+        Mail::to($request->email)->send(new verifiedMailer($user));
+
+        return response()->json([
+            'success' => true,
+            'message' => __('auth.sendEmailSuccess'),
+        ], 200);
+    }
+
+    /**
+    * @OA\Post(
+    *   path="/api/v1/recover-password",
+    *   summary="Send password recovery email",
+    *   tags={"Authentication"},
+    *   @OA\RequestBody(
+    *     @OA\JsonContent(
+    *       required={"email"},
+    *       @OA\Property(property="email", type="string")
+    *     )
+    *   ),
+    *   @OA\Response(
+    *     response=200,
+    *     description="Email de recuperación de contraseña enviado exitosamente",
+    *     @OA\JsonContent(
+    *       @OA\Property(property="success", type="boolean"),
+    *       @OA\Property(property="message", type="string")
+    *     )
+    *   ),
+    *   @OA\Response(
+    *     response=400,
+    *     description="Error al enviar el email de recuperación",
+    *     @OA\JsonContent(
+    *       @OA\Property(property="success", type="boolean"),
+    *       @OA\Property(property="message", type="string")
+    *     )
+    *   )
+    * )
+    */
+    
     public function recoveryPassword(Request $request)
     {
         $user = User::where('email', $request->email)->first();
@@ -293,13 +373,13 @@ class AuthController extends Controller
 
             return response()->json([
                 'success' => true,
-                'message' => 'Correo enviado correctamente',
+                'message' => __('auth.sendEmailSuccess'),
             ], 200);
         }
 
         return response()->json([
             'success' => false,
-            'message' => 'Email no válido',
+            'message' => __('auth.sendEmailFailed'),
         ], 400);
     }
 }
