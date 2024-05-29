@@ -204,7 +204,7 @@ class AuthController extends Controller
     }
 
     /**
-     * @OA\Delete(
+     * @OA\Post(
      *   path="/api/v1/logout",
      *   summary="Log out a user",
      *   tags={"Authentication"},

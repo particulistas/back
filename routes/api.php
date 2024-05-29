@@ -3,6 +3,7 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\AuthController;
+use App\Http\Controllers\Profile\UserController;
 
 
 
@@ -21,6 +22,7 @@ Route::group(['prefix' => 'v1'], function () {
 
     Route::middleware('auth:api')->group(function () {
 
+        Route::patch('/update/user', [UserController::class, 'updateProfile']);
         Route::post('/logout', [AuthController::class, 'destroy']);
 
         Route::prefix('user')->group(function () {
