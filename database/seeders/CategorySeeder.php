@@ -15,8 +15,7 @@ class CategorySeeder extends Seeder
             'Garage' => ['Garage'],
             'Oficinas' => ['Oficinas'],
             'Trastero' => ['Trastero'],
-            'Vivienda' => ['Piso', 'Ático', 'Casa', 'Chalet', 'Duplex', 'Loft', 'Apartamento', 'Estudio'],
-            'Casa y Chalet' => ['Piso', 'Ático', 'Casa', 'Chalet', 'Duplex', 'Loft', 'Apartamento', 'Estudio'],
+            'Vivienda' => ['Piso', 'Ático', 'Casa', 'Chalet', 'Duplex', 'Loft', 'Apartamento', 'Estudio', 'Casa', 'Chalet'],
         ];
 
         foreach ($categories as $parent => $children) {
