@@ -14,6 +14,7 @@ use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use App\Models\User;
 use Carbon\Carbon;
+use App\Http\Controllers\Auth\AuthController;
 
 
 /**
@@ -154,13 +155,12 @@ class AuthController extends Controller
      */
     public function login(Request $request)
     {
-
         $validatedData = $request->validate([
             'email' => 'required|string|email',
             'password' => 'required|string'
-        ]);
+        ]);  
 
-        if (Auth::guard('web')->attempt(['email' => $request->email, 'password' => $request->password])) {
+        if (Auth::guard('web')->attempt(['email' => request('email'), 'password' => request('password')])) {
              // successfull authentication
             $user = Auth::guard('web')->user();
             $user_token['token'] = $user->createToken('appToken')->accessToken;
@@ -170,16 +170,17 @@ class AuthController extends Controller
                 'success' => true,
                 'token' => $user_token,
                 'user' => $user,
-                'role' => $user2->roles[0]->name,
-            ], 200);
-         } else {
+                'role' => $user2->roles[0]->name, 
+            ], 200); 
+        } else {
             // failure to authenticate
             return response()->json([
                 'success' => false,
                 'message' => __('auth.failed'),
             ], 401); 
-        }
-    }
+        } 
+
+    } 
 
 
 
