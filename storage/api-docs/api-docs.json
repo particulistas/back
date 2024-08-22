@@ -15,13 +15,13 @@
         }
     ],
     "paths": {
-        "/api/v1/register": {
+        "/v1/register": {
             "post": {
                 "tags": [
                     "Authentication"
                 ],
                 "summary": "Register a new user",
-                "operationId": "d1583f2bf46ef89eb01450c2251311dc",
+                "operationId": "72977a3398b2d206787b50806625f7ba",
                 "requestBody": {
                     "content": {
                         "application/json": {
@@ -61,13 +61,13 @@
                 }
             }
         },
-        "/api/v1/login": {
+        "/v1/login": {
             "post": {
                 "tags": [
                     "Authentication"
                 ],
                 "summary": "Authenticate user and return token",
-                "operationId": "15400f94bfe16d4952aa545606939fc2",
+                "operationId": "6e425b9ee3760566a58972c47caf3349",
                 "requestBody": {
                     "content": {
                         "application/json": {
@@ -117,13 +117,13 @@
                 }
             }
         },
-        "/api/v1/users": {
+        "/v1/users": {
             "get": {
                 "tags": [
                     "Users"
                 ],
                 "summary": "Get list of users",
-                "operationId": "1172beb07f8f35b82f85a1233a724e51",
+                "operationId": "1bca5c14dcdee32c720a47bba741bd3d",
                 "responses": {
                     "200": {
                         "description": "Successful operation",
@@ -141,13 +141,13 @@
                 }
             }
         },
-        "/api/v1/logout": {
+        "/v1/logout": {
             "post": {
                 "tags": [
                     "Authentication"
                 ],
                 "summary": "Log out a user",
-                "operationId": "8fe8198768b1cb6ae1cf918e273e0e93",
+                "operationId": "a28d58064e06360a8cf290b4a498c8a9",
                 "responses": {
                     "200": {
                         "description": "Logged out successfully"
@@ -155,13 +155,13 @@
                 }
             }
         },
-        "/api/v1/verified/{token}": {
+        "/v1/verified/{token}": {
             "post": {
                 "tags": [
                     "Authentication"
                 ],
                 "summary": "Verify user email",
-                "operationId": "01edfa636784664dc5ec9b79d4977f74",
+                "operationId": "ed6db56542b48d637d9f1887260bf6ae",
                 "parameters": [
                     {
                         "name": "token",
@@ -213,13 +213,13 @@
                 }
             }
         },
-        "/api/v1/resend-verification": {
+        "/v1/resend-verification": {
             "post": {
                 "tags": [
                     "Authentication"
                 ],
                 "summary": "Resend verification email",
-                "operationId": "c27b75edb1b1f7d712b6c086a4e2d522",
+                "operationId": "75f36dcc5e0b9af39b745f4e4c80a4a6",
                 "requestBody": {
                     "content": {
                         "application/json": {
@@ -277,13 +277,13 @@
                 }
             }
         },
-        "/api/v1/recover-password": {
+        "/v1/recover-password": {
             "post": {
                 "tags": [
                     "Authentication"
                 ],
                 "summary": "Send password recovery email",
-                "operationId": "886ac8764c146f1b21d384481d739341",
+                "operationId": "a31e249b7ffe95d7004a13eba75a0921",
                 "requestBody": {
                     "content": {
                         "application/json": {
@@ -341,13 +341,13 @@
                 }
             }
         },
-        "/api/v1/new-password/{token}": {
+        "/v1/new-password/{token}": {
             "post": {
                 "tags": [
                     "Authentication"
                 ],
                 "summary": "Set a new password using a token",
-                "operationId": "0d79f7444d27dc0f1cf70eac2210cfe3",
+                "operationId": "5dc4bd4cb88f3a90692e87fd23cf1de8",
                 "parameters": [
                     {
                         "name": "token",
@@ -420,13 +420,13 @@
                 }
             }
         },
-        "/api/v1/update-profile": {
+        "/v1/update-profile": {
             "patch": {
                 "tags": [
                     "Users"
                 ],
                 "summary": "Update user profile",
-                "operationId": "7b7b9645a95d953b32abcc43f008b68e",
+                "operationId": "bdb8538b41f74c1b54677f08253fd782",
                 "requestBody": {
                     "content": {
                         "application/json": {
@@ -462,6 +462,85 @@
                                         },
                                         "message": {
                                             "type": "string"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid input",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean"
+                                        },
+                                        "message": {
+                                            "type": "string"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/v1/list/categories": {
+            "get": {
+                "tags": [
+                    "Categories"
+                ],
+                "summary": "Get all categories with their children",
+                "operationId": "9afd262759d1877c1a9e4e06065dfc26",
+                "responses": {
+                    "200": {
+                        "description": "Categories retrieved successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean"
+                                        },
+                                        "message": {
+                                            "type": "array",
+                                            "items": {
+                                                "properties": {
+                                                    "id": {
+                                                        "type": "integer"
+                                                    },
+                                                    "name": {
+                                                        "type": "string"
+                                                    },
+                                                    "parent_id": {
+                                                        "type": "integer",
+                                                        "nullable": true
+                                                    },
+                                                    "children": {
+                                                        "type": "array",
+                                                        "items": {
+                                                            "properties": {
+                                                                "id": {
+                                                                    "type": "integer"
+                                                                },
+                                                                "name": {
+                                                                    "type": "string"
+                                                                },
+                                                                "parent_id": {
+                                                                    "type": "integer"
+                                                                }
+                                                            },
+                                                            "type": "object"
+                                                        }
+                                                    }
+                                                },
+                                                "type": "object"
+                                            }
                                         }
                                     },
                                     "type": "object"

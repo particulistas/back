@@ -11,7 +11,7 @@ class UserController extends Controller
 
     /**
     * @OA\Patch(
-    *   path="/api/v1/update-profile",
+    *   path="/v1/update-profile",
     *   summary="Update user profile",
     *   tags={"Users"},
     *   @OA\RequestBody(
