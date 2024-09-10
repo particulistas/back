@@ -9,8 +9,17 @@ class Media extends Model
 {
     use HasFactory;
 
+    protected $fillable = [
+        'properties_id',
+        'name',
+        'path',
+        'type',
+        'object',
+        'postition'
+    ];
+
     public function properties(): BelongsTo
     {
-        return $this->belongsTo(Property::class);
+        return $this->belongsTo(Property::class, 'properties_id');
     }
 }

@@ -13,6 +13,12 @@ return new class extends Migration
     {
         Schema::create('media', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('properties_id')->constrained()->onDelete('cascade'); //debe ir la subcategoria
+            $table->string('name')->nullable();
+            $table->string('path')->nullable();
+            $table->string('type')->nullable();
+            $table->string('object')->nullable();
+            $table->integer('postition')->default(0);
             $table->timestamps();
         });
     }

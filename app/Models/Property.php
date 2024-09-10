@@ -48,6 +48,6 @@ class Property extends Model
 
     public function media(): HasMany
     {
-        return $this->hasMany(Media::class);
+        return $this->hasMany(Media::class, 'properties_id');
     }
 }
