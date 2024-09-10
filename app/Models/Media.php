@@ -14,7 +14,7 @@ class Media extends Model
         'name',
         'path',
         'type',
-        'object',
+        'object', //imagen de la propiedad o del plano de la propiedad
         'postition'
     ];
 
