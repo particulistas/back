@@ -14,15 +14,17 @@ class recoverPasswordMailer extends Mailable
     use Queueable, SerializesModels;
     public $user;
     public $appName;
+    public $password;
 
     /**
      * Create a new message instance.
      */
-    public function __construct($user)
+    public function __construct($user,$password)
     {
         $this->user = $user;
+        $this->password = $password;
         $this->appName = config('app.name');
-        $this->verificationUrl = config('app.urlFront').'/'.$user->remember_token; //agregar ruta aqui, pero se debe enviar con el remember_token
+        $this->verificationUrl = config('app.urlFront').'/'.$password; //agregar ruta aqui, pero se debe enviar con el remember_token
     }
 
     /**
