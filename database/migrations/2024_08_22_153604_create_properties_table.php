@@ -15,8 +15,10 @@ return new class extends Migration
             $table->id();
             $table->foreignId('category_id')->constrained()->onDelete('cascade'); //debe ir la subcategoria
             $table->enum('transaction', ['sale', 'rental', 'both'])->default('sale');
-            $table->float('sale_price', precision: 53, scale: 4)->nullable();
-            $table->float('rental_price', precision: 53, scale: 4)->nullable();
+            //$table->float('sale_price', precision: 53, scale: 4)->nullable();
+            //$table->float('rental_price', precision: 53, scale: 4)->nullable();
+            $table->float('sale_price', 8,  4)->nullable();
+            $table->float('rental_price', 8,  4)->nullable();
             $table->json('bills')->nullable();
             $table->string('m_built')->nullable();
             $table->string('m_usefull')->nullable();
@@ -38,13 +40,13 @@ return new class extends Migration
             $table->boolean('top_floor')->default(0);
             $table->string('door')->nullable();
             $table->text('description')->nullable();
-            $table->text('optionals')->nullable();
+           // $table->text('optionals')->nullable();
             $table->enum('energy_certificate', ['yes', 'process', 'exempt'])->default('exempt');
             $table->json('energy_certificate_yes')->nullable();
             $table->boolean('publish_phone')->default(0);
             $table->string('phone')->nullable();
             $table->enum('phone_characteristics', ['calls', 'whatsapp', 'both'])->default('both');
-            $table->enum('status', ['Daft', 'Publish'])->default('Draft');
+            $table->enum('status', ['Draft', 'Publish'])->default('Draft');
             $table->text('optionals')->nullable(); //caracteristicas opcionales de la vivienda (habitaciones)
             $table->timestamps();
         });
