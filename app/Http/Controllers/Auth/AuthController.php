@@ -49,7 +49,7 @@ class AuthController extends Controller
 
     /**
      * @OA\Post(
-     *   path="/api/v1/register",
+     *   path="/v1/register",
      *   summary="Register a new user",
      *   tags={"Authentication"},
      *   @OA\RequestBody(
@@ -128,7 +128,7 @@ class AuthController extends Controller
 
      /**
      * @OA\Post(
-     *   path="/api/v1/login",
+     *   path="/v1/login",
      *   summary="Authenticate user and return token",
      *   tags={"Authentication"},
      *   @OA\RequestBody(
@@ -186,7 +186,7 @@ class AuthController extends Controller
 
     /**
      * @OA\Get(
-     *   path="/api/v1/users",
+     *   path="/v1/users",
      *   summary="Get list of users",
      *   tags={"Users"},
      *   @OA\Response(
@@ -206,7 +206,7 @@ class AuthController extends Controller
 
     /**
      * @OA\Post(
-     *   path="/api/v1/logout",
+     *   path="/v1/logout",
      *   summary="Log out a user",
      *   tags={"Authentication"},
      *   @OA\Response(
@@ -229,7 +229,7 @@ class AuthController extends Controller
 
     /**
     * @OA\Post(
-    *   path="/api/v1/verified/{token}",
+    *   path="/v1/verified/{token}",
     *   summary="Verify user email",
      *   tags={"Authentication"},
     *   @OA\Parameter(
@@ -282,7 +282,7 @@ class AuthController extends Controller
 
     /**
     * @OA\Post(
-    *   path="/api/v1/resend-verification",
+    *   path="/v1/resend-verification",
     *   summary="Resend verification email",
     *   tags={"Authentication"},
     *   @OA\RequestBody(
@@ -332,7 +332,7 @@ class AuthController extends Controller
 
     /**
     * @OA\Post(
-    *   path="/api/v1/recover-password",
+    *   path="/v1/recover-password",
     *   summary="Send password recovery email",
     *   tags={"Authentication"},
     *   @OA\RequestBody(
@@ -388,7 +388,7 @@ class AuthController extends Controller
 
     /**
     * @OA\Post(
-    *   path="/api/v1/new-password/{token}",
+    *   path="/v1/new-password/{token}",
     *   summary="Set a new password using a token",
     *   tags={"Authentication"},
     *   @OA\Parameter(
