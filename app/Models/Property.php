@@ -50,4 +50,8 @@ class Property extends Model
     {
         return $this->hasMany(Media::class, 'properties_id');
     }
+    public function user(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'user_id');
+    }
 }

@@ -11,7 +11,7 @@ class PropertiesController extends Controller
     {
         $user = $request->user();
 
-
+        
         return response()->json([
             'success' => true,
             'message' => __('content.storeProperty'),

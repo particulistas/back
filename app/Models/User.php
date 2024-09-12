@@ -51,8 +51,12 @@ class User extends Authenticatable
         ];
     }
 
+    public function properties(): HasMany
+    {
+        return $this->hasMany(Property::class, 'user_id');
+    }
     public function profile()
     {
-      return $this->hasOne(profile::class);
+        return $this->hasOne(profile::class);
     }
 }

@@ -13,6 +13,7 @@ return new class extends Migration
     {
         Schema::create('properties', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('user_id')->constrained()->onDelete('cascade'); //usuario al que pertenece
             $table->foreignId('category_id')->constrained()->onDelete('cascade'); //debe ir la subcategoria
             $table->enum('transaction', ['sale', 'rental', 'both'])->default('sale');
             $table->float('sale_price', 8,  4)->nullable();
