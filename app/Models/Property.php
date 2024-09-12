@@ -43,7 +43,7 @@ class Property extends Model
             'phone',
             'phone_characteristics',
             'status',
-            'optionals'
+            'caracteristics_optionals'
     ];
 
     public function media(): HasMany
