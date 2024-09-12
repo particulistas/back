@@ -2,8 +2,19 @@
     <h1 style="font-family: 'Haas Grot Text R Web', 'Helvetica Neue', Helvetica, Arial, sans-serif; font-size: 24px; font-weight: bold;">
         A pedido restaurar su contraseña 
     </h1>
+
+    <ul>
+        <li>Usuario: {{ $user->email }} </li>
+        <li>Contraseña: {{ $password}} </li>
+    </ul>
+
+    <p>
+        <strong>NOTA:</strong> Una vez acceda al sistema, se recomienda modificar la contraseña generada.
+    </p>
+
+    <p>Este correo es enviado de manera automática por la aplicación {{ config('app.name') }}.</p>
     
-    <p style="font-family: 'Haas Grot Text R Web', 'Helvetica Neue', Helvetica, Arial, sans-serif; font-size: 14px;">
+    <!-- <p style="font-family: 'Haas Grot Text R Web', 'Helvetica Neue', Helvetica, Arial, sans-serif; font-size: 14px;">
         Necesitamos que verifique su cuenta, presione el siguiente botón
     </p>
 
@@ -17,5 +28,5 @@
 
     <p style="font-family: 'Haas Grot Text R Web', 'Helvetica Neue', Helvetica, Arial, sans-serif; font-size: 14px;">
         <a href="{{ $verificationUrl }}" style="color: #EA4C89;">{{ $verificationUrl }}</a>
-    </p>
+    </p> -->
 </div>

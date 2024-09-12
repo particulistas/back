@@ -258,9 +258,9 @@ class AuthController extends Controller
     * )
     */
 
-    public function verifiedMail($token)
+    public function verifiedMail(Request $request)
     {
-        $user = User::where('remember_token', $token)->first();
+        $user = User::where('remember_token', $request->token)->first();
         
         if ($user) {
 
@@ -312,9 +312,9 @@ class AuthController extends Controller
 
     public function resendMailVerified(Request $request)
     {
-        $validatedData = $request->validate([
+        /* $validatedData = $request->validate([
             'email' => 'required|string|email',
-        ]);
+        ]); */
 
         $randomCode = Str::random(32);
         
@@ -365,12 +365,14 @@ class AuthController extends Controller
         $user = User::where('email', $request->email)->first();
         
         if ($user) {
-            $randomCode = Str::random(32);
+            //$randomCode = Str::random(32);
+            $password = Str::random(8);
 
-            $user->remember_token = $randomCode;
+           // $user->remember_token = $randomCode;
+            $user->password = $password;
             $user->save();
 
-            Mail::to($request->email)->send(new recoverPasswordMailer($user));
+            Mail::to($request->email)->send(new recoverPasswordMailer($user,$password));
 
             return response()->json([
                 'success' => true,

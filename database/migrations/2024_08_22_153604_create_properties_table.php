@@ -15,8 +15,8 @@ return new class extends Migration
             $table->id();
             $table->foreignId('category_id')->constrained()->onDelete('cascade'); //debe ir la subcategoria
             $table->enum('transaction', ['sale', 'rental', 'both'])->default('sale');
-            $table->float('sale_price', precision: 53)->nullable();
-            $table->float('rental_price', precision: 53)->nullable();
+            $table->float('sale_price', 8,  4)->nullable();
+            $table->float('rental_price', 8,  4)->nullable();
             $table->json('bills')->nullable();
             $table->string('m_built')->nullable();
             $table->string('m_usefull')->nullable();
