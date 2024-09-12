@@ -5,7 +5,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Properties\PropertiesController;
 
 Route::group(['prefix' => 'v1'], function () {
-    Route::prefix('properties')->group(function () {
+    Route::middleware('auth:api')->prefix('properties')->group(function () {
         Route::post('/store', [PropertiesController::class, 'store']);
     });
 });
