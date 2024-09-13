@@ -11,6 +11,7 @@ class Property extends Model
     use HasFactory;
 
     protected $fillable = [
+            'user_id',
             'category_id',
             'transaction',
             'sale_price',
@@ -43,11 +44,15 @@ class Property extends Model
             'phone',
             'phone_characteristics',
             'status',
-            'optionals'
+            'caracteristics_optionals'
     ];
 
     public function media(): HasMany
     {
         return $this->hasMany(Media::class, 'properties_id');
+    }
+    public function user(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'user_id');
     }
 }
