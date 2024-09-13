@@ -3,21 +3,34 @@
 namespace App\Services;
 
 use App\Repositories\PropertiesRepository;
+use App\Repositories\MediasRepository;
+use Illuminate\Support\Facades\Storage;
 
 class PropertiesService
 {
     protected $propertiesRepository;
+    protected $mediasRepository;
 
-    public function __construct(PropertiesRepository $propertiesRepository)
+    public function __construct(PropertiesRepository $propertiesRepository, MediasRepository $mediasRepository)
     {
         $this->propertiesRepository = $propertiesRepository;
+        $this->mediasRepository = $mediasRepository;
     }
 
+    
     public function storePropertyData(array $data)
     {
+        //proceso los datos de la propiedad
         $processedData = $this->processData($data);
 
-        return $this->propertiesRepository->saveProperty($processedData);
+        //almaceno la propiedad
+        $property = $this->propertiesRepository->saveProperty($processedData);
+        
+        // Procesar y almacenar las imágenes asociadas
+        if (isset($data['images']) && is_array($data['images'])) {
+            $this->processAndStoreMedia($data['images'], $property->id, "Properties");
+        }
+        return $property;
     }
 
     protected function processData(array $data)
@@ -69,5 +82,31 @@ class PropertiesService
             'field2' => $data['field2'] ?? null,
             'field3' => $data['field3'] ?? null,
         ]);
+    }
+
+    protected function processAndStoreMedia(array $images, $propertyId, $object)
+    {
+        $storagePath = "properties/{$propertyId}/";
+
+        foreach ($images as $image) {
+            if (isset($image['file']) && $image['file']->isValid()) {
+                // Mover el archivo a la carpeta de almacenamiento
+                $filePath = $image['file']->store($storagePath, 'public');
+
+                $extension = $image['file']->extension(); // 'jpg', 'png', etc.
+
+                $mediaData = [
+                    'properties_id' => $propertyId,
+                    'name' => $image['name'] ?? pathinfo($filePath, PATHINFO_FILENAME),
+                    'path' => $filePath,
+                    'type' => $extension,
+                    'object' => $object,
+                    'position' => $image['position'] ?? 0,
+                ];
+
+                // Almacenar cada imagen en la base de datos
+                $this->mediasRepository->saveMedia($mediaData);
+            }
+        }
     }
 }
