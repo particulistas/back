@@ -28,8 +28,14 @@ class PropertiesService
         
         // Procesar y almacenar las imágenes asociadas
         if (isset($data['images']) && is_array($data['images'])) {
-            $this->processAndStoreMedia($data['images'], $property->id, "Properties");
+            $media = $this->processAndStoreMedia($data['images'], $property->id, "Properties");
         }
+
+        //Proceso y alamceno las imagenes de los planos asociados a la propiedad
+        if (isset($data['flat']) && is_array($data['flat'])) {
+            $media = $this->processAndStoreMedia($data['flat'], $property->id, "flat");
+        }
+        
         return $property;
     }
 
@@ -89,19 +95,18 @@ class PropertiesService
         $storagePath = "properties/{$propertyId}/";
 
         foreach ($images as $image) {
-            if (isset($image['file']) && $image['file']->isValid()) {
-                // Mover el archivo a la carpeta de almacenamiento
-                $filePath = $image['file']->store($storagePath, 'public');
+            if ($image->isValid()) {
+                $filePath = $image->store($storagePath, 'public');
 
-                $extension = $image['file']->extension(); // 'jpg', 'png', etc.
+                $extension = $image->extension();
 
                 $mediaData = [
                     'properties_id' => $propertyId,
-                    'name' => $image['name'] ?? pathinfo($filePath, PATHINFO_FILENAME),
+                    'name' => pathinfo($filePath, PATHINFO_FILENAME),
                     'path' => $filePath,
-                    'type' => $extension,
+                    'type' => $extension, 
                     'object' => $object,
-                    'position' => $image['position'] ?? 0,
+                    'position' => 0, 
                 ];
 
                 // Almacenar cada imagen en la base de datos
