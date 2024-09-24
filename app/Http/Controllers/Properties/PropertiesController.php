@@ -17,7 +17,7 @@ class PropertiesController extends Controller
 
     public function store(Request $request)
     {
-        $property = $this->propertiesService->storePropertyData($request);
+        $property = $this->propertiesService->storePropertyData($request->all());
 
         return response()->json(['success' => true, 'property' => $property], 201);
     }
