@@ -20,18 +20,36 @@ Route::group(['prefix' => 'v1'], function () {
 
     /*** Utilities ****/
 
-    Route::get('/list/categories', [CategoryController::class, 'show']);
+   // Route::get('/list/categories', [CategoryController::class, 'show']);
 
     Route::middleware('auth:api')->group(function () {
         /*** Authentications logued***/
 
-        Route::patch('/update/user', [UserController::class, 'updateProfile']);
-        Route::post('/logout', [AuthController::class, 'destroy']);
+        // Route::patch('/update/user', [UserController::class, 'updateProfile']);
+        // Route::post('/logout', [AuthController::class, 'destroy']);
 
         /*** Utilities logued****/
 
-        Route::prefix('user')->group(function () {
+       /*  Route::prefix('user')->group(function () {
             Route::get('/', [AuthController::class, 'getUsers']);
-        });
+        }); */
+
+
     });
+
+    Route::prefix('users')->group(function () {
+        //Route::get('/', [UserController::class, 'index']);
+       // Route::get('create', [UserController::class, 'create']);
+       // Route::post('/', [UserController::class, 'store']);
+        Route::get('{id}', [UserController::class, 'show']);
+       // Route::get('edit', [UserController::class, 'edit']);
+       // Route::put('{id}', [UserController::class, 'update']);
+       // Route::delete('{id}', [UserController::class, 'destroy']);
+        //Route::get('searchUsers/{id}', [UserController::class, 'searchUsers']);
+        //Route::get('identify/{email}', [UserController::class, 'identify']);
+       
+    });
+
+   // Route::get('/getUser', [UserController::class, 'getUserData']);
+
 });

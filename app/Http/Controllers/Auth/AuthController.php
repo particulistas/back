@@ -106,7 +106,7 @@ class AuthController extends Controller
     } 
 
 
-    public function getUsers(Request $request)
+   /*  public function getUsers(Request $request)
     {
         return response()->json($request->user()->load('profile'));
     }
@@ -122,7 +122,7 @@ class AuthController extends Controller
                 'message' => __('auth.logout'),
             ], 200);
         }
-    }
+    } */
 
     public function verifiedMail(Request $request)
     {

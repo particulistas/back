@@ -4,12 +4,32 @@ namespace App\Http\Controllers\Profile;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Storage;
 use App\Models\Profile;
+use App\Models\User;
+
+
+use Illuminate\Validation\ValidationException;
+
+use Illuminate\Support\Facades\Auth;
+
+use Illuminate\Support\Facades\Mail;
+use Spatie\Permission\Models\Role;
+use App\Mail\Auth\verifiedMailer;
+use App\Mail\Auth\recoverPasswordMailer;
+use Illuminate\Support\Str;
+
+
+use Carbon\Carbon;
+use App\Http\Controllers\Auth\AuthController;
+use App\Http\Controllers\Profile\UserController;
+
 
 class UserController extends Controller
 {
 
-    public function updateProfile(Request $request)
+    /* public function updateProfile(Request $request)
     {
         $user = $request->user();
 
@@ -44,5 +64,16 @@ class UserController extends Controller
             'message' => __('user.updateProfile'),
         ], 200);
         
+    } */
+
+    public function show(Request $request)
+    {
+        $user = User::with('profile')->find($request->id);
+
+        if (!$user) {
+            return response()->json(['message' => 'Usuario no encontrado'], 404);
+        }
+
+        return response()->json($user);
     }
 }
