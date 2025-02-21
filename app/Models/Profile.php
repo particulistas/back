@@ -16,6 +16,8 @@ class Profile extends Model
         'phone',
         'gender',
         'phone',
+        'country_code', 
+        'avatar'
     ];
 
     public function user()
