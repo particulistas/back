@@ -17,60 +17,9 @@ use Carbon\Carbon;
 use App\Http\Controllers\Auth\AuthController;
 
 
-/**
- * @OA\OpenApi(
- *   @OA\Info(
- *     title="Endpoint PArticulistas",
- *     version="1.0.0",
- *     description="Endpoint donde se desarrolla todo el back de Particulistas",
- *     @OA\Contact(
- *       email="info@particulistas.com"
- *     )
- *   ),
- *   @OA\Server(
- *     description="Servidor principal",
- *     url="http://localhost:8000/api"
- *   )
- * )
- * 
- * @OA\Schema(
- *   schema="User",
- *   type="object",
- *   description="User model",
- *   @OA\Property(property="id", type="integer", description="ID of the user"),
- *   @OA\Property(property="name", type="string", description="Name of the user"),
- *   @OA\Property(property="email", type="string", description="Email address of the user")
- * )
- */
-
 class AuthController extends Controller
 {
 
-
-    /**
-     * @OA\Post(
-     *   path="/v1/register",
-     *   summary="Register a new user",
-     *   tags={"Authentication"},
-     *   @OA\RequestBody(
-     *     @OA\JsonContent(
-     *       required={"name", "email", "password", "phone"},
-     *       @OA\Property(property="name", type="string"),
-     *       @OA\Property(property="email", type="string"),
-     *       @OA\Property(property="password", type="string"),
-     *       @OA\Property(property="phone", type="string")
-     *     )
-     *   ),
-     *   @OA\Response(
-     *     response=200,
-     *     description="User registered successfully"
-     *   ),
-     *   @OA\Response(
-     *     response=422,
-     *     description="Validation failed"
-     *   )
-     * )
-     */
     public function store(Request $request)
     {
 
@@ -126,33 +75,6 @@ class AuthController extends Controller
         
     }
 
-     /**
-     * @OA\Post(
-     *   path="/v1/login",
-     *   summary="Authenticate user and return token",
-     *   tags={"Authentication"},
-     *   @OA\RequestBody(
-     *     @OA\JsonContent(
-     *       required={"email", "password"},
-     *       @OA\Property(property="email", type="string"),
-     *       @OA\Property(property="password", type="string")
-     *     )
-     *   ),
-     *   @OA\Response(
-     *     response=200,
-     *     description="Authentication successful",
-     *     @OA\JsonContent(
-     *       @OA\Property(property="token", type="string"),
-     *       @OA\Property(property="user", ref="#/components/schemas/User"),
-     *       @OA\Property(property="role", type="string")
-     *     )
-     *   ),
-     *   @OA\Response(
-     *     response=401,
-     *     description="Failed to authenticate"
-     *   )
-     * )
-     */
     public function login(Request $request)
     {
         $validatedData = $request->validate([
@@ -171,6 +93,7 @@ class AuthController extends Controller
                 'token' => $user_token,
                 'user' => $user,
                 'role' => $user2->roles[0]->name, 
+                'profile' => $user2->profile,
             ], 200); 
         } else {
             // failure to authenticate
@@ -183,38 +106,12 @@ class AuthController extends Controller
     } 
 
 
-
-    /**
-     * @OA\Get(
-     *   path="/v1/users",
-     *   summary="Get list of users",
-     *   tags={"Users"},
-     *   @OA\Response(
-     *     response=200,
-     *     description="Successful operation",
-     *     @OA\JsonContent(
-     *       type="array",
-     *       @OA\Items(ref="#/components/schemas/User")
-     *     )
-     *   )
-     * )
-     */
     public function getUsers(Request $request)
     {
         return response()->json($request->user()->load('profile'));
     }
 
-    /**
-     * @OA\Post(
-     *   path="/v1/logout",
-     *   summary="Log out a user",
-     *   tags={"Authentication"},
-     *   @OA\Response(
-     *     response=200,
-     *     description="Logged out successfully"
-     *   )
-     * )
-     */
+
     public function destroy(Request $request)
     {
         if (Auth::user()) {
@@ -226,37 +123,6 @@ class AuthController extends Controller
             ], 200);
         }
     }
-
-    /**
-    * @OA\Post(
-    *   path="/v1/verified/{token}",
-    *   summary="Verify user email",
-     *   tags={"Authentication"},
-    *   @OA\Parameter(
-    *     name="token",
-    *     in="path",
-    *     required=true,
-    *     @OA\Schema(type="string"),
-    *     description="Verification token"
-    *   ),
-    *   @OA\Response(
-    *     response=200,
-    *     description="Correo verificado exitosamente",
-    *     @OA\JsonContent(
-    *       @OA\Property(property="success", type="boolean"),
-    *       @OA\Property(property="message", type="string")
-    *     )
-    *   ),
-    *   @OA\Response(
-    *     response=400,
-    *     description="Error al verificar, token no válido",
-    *     @OA\JsonContent(
-    *       @OA\Property(property="success", type="boolean"),
-    *       @OA\Property(property="message", type="string")
-    *     )
-    *   )
-    * )
-    */
 
     public function verifiedMail(Request $request)
     {
@@ -280,36 +146,6 @@ class AuthController extends Controller
         ], 400);
     }
 
-    /**
-    * @OA\Post(
-    *   path="/v1/resend-verification",
-    *   summary="Resend verification email",
-    *   tags={"Authentication"},
-    *   @OA\RequestBody(
-    *     @OA\JsonContent(
-    *       required={"email"},
-    *       @OA\Property(property="email", type="string")
-    *     )
-    *   ),
-    *   @OA\Response(
-    *     response=200,
-    *     description="Email de verificación enviado exitosamente",
-    *     @OA\JsonContent(
-    *       @OA\Property(property="success", type="boolean"),
-    *       @OA\Property(property="message", type="string")
-    *     )
-    *   ),
-    *   @OA\Response(
-    *     response=400,
-    *     description="Solicitud no válida",
-    *     @OA\JsonContent(
-    *       @OA\Property(property="success", type="boolean"),
-    *       @OA\Property(property="message", type="string")
-    *     )
-    *   )
-    * )
-    */
-
     public function resendMailVerified(Request $request)
     {
         /* $validatedData = $request->validate([
@@ -330,36 +166,6 @@ class AuthController extends Controller
         ], 200);
     }
 
-    /**
-    * @OA\Post(
-    *   path="/v1/recover-password",
-    *   summary="Send password recovery email",
-    *   tags={"Authentication"},
-    *   @OA\RequestBody(
-    *     @OA\JsonContent(
-    *       required={"email"},
-    *       @OA\Property(property="email", type="string")
-    *     )
-    *   ),
-    *   @OA\Response(
-    *     response=200,
-    *     description="Email de recuperación de contraseña enviado exitosamente",
-    *     @OA\JsonContent(
-    *       @OA\Property(property="success", type="boolean"),
-    *       @OA\Property(property="message", type="string")
-    *     )
-    *   ),
-    *   @OA\Response(
-    *     response=400,
-    *     description="Error al enviar el email de recuperación",
-    *     @OA\JsonContent(
-    *       @OA\Property(property="success", type="boolean"),
-    *       @OA\Property(property="message", type="string")
-    *     )
-    *   )
-    * )
-    */
-    
     public function recoveryPassword(Request $request)
     {
         $user = User::where('email', $request->email)->first();
@@ -385,44 +191,6 @@ class AuthController extends Controller
             'message' => __('auth.sendEmailFailed'),
         ], 400);
     }
-
-    /**
-    * @OA\Post(
-    *   path="/v1/new-password/{token}",
-    *   summary="Set a new password using a token",
-    *   tags={"Authentication"},
-    *   @OA\Parameter(
-    *     name="token",
-    *     in="path",
-    *     required=true,
-    *     @OA\Schema(type="string"),
-    *     description="Password recovery token"
-    *   ),
-    *   @OA\RequestBody(
-    *     @OA\JsonContent(
-    *       required={"password", "password_confirmation"},
-    *       @OA\Property(property="password", type="string"),
-    *       @OA\Property(property="password_confirmation", type="string")
-    *     )
-    *   ),
-    *   @OA\Response(
-    *     response=200,
-    *     description="Password changed successfully",
-    *     @OA\JsonContent(
-    *       @OA\Property(property="success", type="boolean"),
-    *       @OA\Property(property="message", type="string")
-    *     )
-    *   ),
-    *   @OA\Response(
-    *     response=400,
-    *     description="Invalid token or other error",
-    *     @OA\JsonContent(
-    *       @OA\Property(property="success", type="boolean"),
-    *       @OA\Property(property="message", type="string")
-    *     )
-    *   )
-    * )
-    */
 
     public function newPassword(Request $request, $token)
     {
