@@ -76,4 +76,54 @@ class UserController extends Controller
 
         return response()->json($user);
     }
+
+     /**
+     * Update the specified resource in storage.
+     */
+    //PUT
+    public function update(Request $request, string $id)
+    {
+        $user = User::find($id);
+
+        if (!$user) {
+            return response()->json(['message' => 'Usuario no encontrado'], 404);
+        }
+        if ($request->input('name')) {
+            $user->name = $request->input('name');
+        }
+        
+        if ($user->email !=  $request->input('email')) {
+            $emailExists  = User::where('email', $request->input('email'))->exists();
+            if($emailExists ){
+                return response()->json(['message' => 'El campo email ya ha sido tomado']);
+            }
+            $user->email = $request->input('email');
+        }
+        
+        if ($request->input('mostrarCampos')) {
+            if (!Hash::check($request->input('currentPassword'), $user->password)) {
+                return response()->json(['message' => 'La Contraseña actual no es correcta']);
+            }
+
+            $user->password = Hash::make($request->input('newPassword'));
+        }
+
+        if($user->save()){
+
+            $user->profile()->updateOrCreate(
+                ['user_id' => $user->id],
+                ['phone' => $request->input('code') .' '. $request->input('phone')],
+            );
+
+            return response()->json($user);
+        }
+        else{
+
+            return response()->json([
+                'error' => true,
+                'message' => 'Error created user!'
+            ], 201);
+
+        }
+    }
 }
