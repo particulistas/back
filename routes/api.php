@@ -43,7 +43,7 @@ Route::group(['prefix' => 'v1'], function () {
        // Route::post('/', [UserController::class, 'store']);
         Route::get('{id}', [UserController::class, 'show']);
        // Route::get('edit', [UserController::class, 'edit']);
-       // Route::put('{id}', [UserController::class, 'update']);
+        Route::put('{id}', [UserController::class, 'update']);
        // Route::delete('{id}', [UserController::class, 'destroy']);
         //Route::get('searchUsers/{id}', [UserController::class, 'searchUsers']);
         //Route::get('identify/{email}', [UserController::class, 'identify']);
