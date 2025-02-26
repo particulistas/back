@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\Profile\UserController;
 use App\Http\Controllers\Utilities\CategoryController;
+use App\Http\Controllers\AvatarController;
 
 Route::group(['prefix' => 'v1'], function () {
     
@@ -50,6 +51,7 @@ Route::group(['prefix' => 'v1'], function () {
        
     });
 
-   // Route::get('/getUser', [UserController::class, 'getUserData']);
+    Route::post('/upload-avatar', [AvatarController::class, 'upload']);
+    Route::post('/update-avatar', [AvatarController::class, 'updateAvatar']);
 
 });
