@@ -56,4 +56,20 @@ class CategoryController extends Controller
             'message' => $categories,
         ], 200);
     }
+
+    public function getMainCategories() {
+        $categories = Category::whereNull('parent_id')->get();
+        return response()->json($categories);
+    }
+
+  /*   public function index()
+    {
+        $yearVehicles = YearVehicle::where('disabled','=', 0)->orderBy('name', 'asc')->get();
+        return response()->json($yearVehicles);
+    } */
+
+    public function getChildCategories($parentId) {
+        $categories = Category::where('parent_id', $parentId)->get();
+        return response()->json($categories);
+    }
 }
