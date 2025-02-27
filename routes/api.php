@@ -54,4 +54,7 @@ Route::group(['prefix' => 'v1'], function () {
     Route::post('/upload-avatar', [AvatarController::class, 'upload']);
     Route::post('/update-avatar', [AvatarController::class, 'updateAvatar']);
 
+    Route::get('/categories/main', [CategoryController::class, 'getMainCategories']);
+    Route::get('/categories/children/{parentId}', [CategoryController::class, 'getChildCategories']);
+
 });
