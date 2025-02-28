@@ -6,6 +6,7 @@ use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\Profile\UserController;
 use App\Http\Controllers\Utilities\CategoryController;
 use App\Http\Controllers\AvatarController;
+use App\Http\Controllers\Properties\PropertiesController;
 
 Route::group(['prefix' => 'v1'], function () {
     
@@ -56,5 +57,9 @@ Route::group(['prefix' => 'v1'], function () {
 
     Route::get('/categories/main', [CategoryController::class, 'getMainCategories']);
     Route::get('/categories/children/{parentId}', [CategoryController::class, 'getChildCategories']);
+
+
+    Route::post('/properties/first-step', [PropertiesController::class, 'storeFirstStep']);
+    Route::post('/properties/media', [PropertiesController::class, 'storeMedia']);
 
 });
