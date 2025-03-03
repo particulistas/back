@@ -11,6 +11,7 @@ class Property extends Model
     use HasFactory;
 
     protected $fillable = [
+            'id',
             'user_id',
             'category_id',
             'transaction',

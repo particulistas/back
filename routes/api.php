@@ -60,6 +60,10 @@ Route::group(['prefix' => 'v1'], function () {
 
 
     Route::post('/properties/first-step', [PropertiesController::class, 'storeFirstStep']);
+    Route::post('/properties/second-step', [PropertiesController::class, 'storeSecondStep']);
+    Route::post('/properties/third-step', [PropertiesController::class, 'storeThirdStep']);
+    Route::post('/properties/fourth-step', [PropertiesController::class, 'storeFourthStep']);
     Route::post('/properties/media', [PropertiesController::class, 'storeMedia']);
+    Route::post('/properties/update-status', [PropertiesController::class, 'updateStatusProperties']);
 
 });
