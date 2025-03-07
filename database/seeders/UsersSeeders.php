@@ -9,7 +9,7 @@ use Spatie\Permission\Models\Role;
 use Spatie\Permission\Models\Permission;
 use Illuminate\Support\Facades\Hash;
 use App\Models\User;
-use App\Models\profile;
+use App\Models\Profile;
 use Carbon\Carbon;
 
 class UsersSeeders extends Seeder
