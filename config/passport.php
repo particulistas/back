@@ -26,9 +26,9 @@ return [
     |
     */
 
-    'private_key' => storage_path('oauth-private.key'),
+    'private_key' => storage_path('oauth/oauth-private.key'),
 
-    'public_key' => storage_path('oauth-public.key'),
+    'public_key' => storage_path('oauth/oauth-public.key'),
 
     /*
     |--------------------------------------------------------------------------
