@@ -3,7 +3,7 @@ name: 🚀 Deploy Laravel to VPS
 on:
   push:
     branches:
-      - main  # Cambia esto si usas otra rama para producción
+      - main
 
 jobs:
   deploy:
@@ -20,7 +20,7 @@ jobs:
           chmod 600 ~/.ssh/id_rsa
           ssh-keyscan -p ${{ secrets.SSH_PORT }} ${{ secrets.SSH_HOST }} >> ~/.ssh/known_hosts
 
-      - name: 📡 Conectarse al VPS y desplegar
+      - name: 📡 Conectarse al VPS y desplegar Laravel
         run: |
           ssh -p ${{ secrets.SSH_PORT }} ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} << 'EOF'
             cd /var/www/html/particulistas/back
@@ -32,5 +32,5 @@ jobs:
             php artisan cache:clear
             php artisan route:clear
             php artisan view:clear
-            sudo systemctl restart apache2
+            sudo systemctl restart apache2 || true 
           EOF
