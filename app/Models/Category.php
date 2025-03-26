@@ -20,4 +20,11 @@ class Category extends Model
     {
         return $this->hasMany(Category::class, 'parent_id');
     }
+
+    public function properties(): BelongsTo
+    {
+        return $this->belongsTo(Property::class, 'category_id');
+    }
+
+
 }

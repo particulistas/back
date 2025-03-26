@@ -74,6 +74,8 @@ class PropertiesController extends Controller
             'top_floor' => $request->top_floor, 
             'door' => $request->door, 
             'description' => $request->description,
+            'latitude' => $request->latitude,
+            'longitude' => $request->longitude,
         ]);
 
         
@@ -138,6 +140,8 @@ class PropertiesController extends Controller
            // 'energy_certificate_yes' => 'nullable|array', // Consumo (A, B, C, etc.)
         ]);
 
+     
+
         $property = Property::findOrFail($request->id);
         $property->update([
             'energy_certificate' => $request->energy_certificate,
@@ -145,9 +149,56 @@ class PropertiesController extends Controller
             'energy_certificate_yes' => $request->energy_certificate_yes, // Guardar como JSON
         ]);
 
-        return response()->json([
+        if ($request->hasFile('images')) {
+            $images = $request->file('images');
+            foreach ($images as $index => $image) {
+                if ($image) {
+                    // Guarda la imagen en una carpeta en el servidorrr
+                    $imageName = $image->store('public/uploads/pictures');
+                    $url = Storage::url($imageName);
+                    // Puedes guardar la información de la imagen en la base de datos 
+                   /* $imageVehicle = ImageVehicle::create([
+                        'vehicle_id' => $vehicle->id,
+                        'name' => $url
+                        //'name' =>  $tempName,
+                    ]);*/
+                    Media::create([
+                       'properties_id' => $property->id,
+                       'name' => $image->getClientOriginalName(),
+                       'path' => $url,
+                       'object' => 'plano',
+                       'type' => $image->getClientMimeType(),
+                       'postition' => $index,
+                   ]); 
+                }
+            }
+        } 
+
+
+       /* if ($request->hasFile('imagesPlano')) {
+            $imagesPlano = $request->file('imagesPlano');
+            foreach ($imagesPlano as $indexPlano => $imagePLano) {
+                if ($imagePlano) {
+                    // Guarda la imagen en una carpeta en el servidorrr
+                    $imageNamePlano = $imagePlano->store('public/uploads/pictures');
+                    $urlPlano = Storage::url($imageNamePlano);
+                    // Puedes guardar la información de la imagen en la base de datos 
+                
+                    Media::create([
+                       'properties_id' => $property->id,
+                       'name' => $imagePlano->getClientOriginalName(),
+                       'path' => $urlPlano,
+                       'object' => 'plano',
+                       'type' => $imagePlano->getClientMimeType(),
+                       'postition' => $indexPlano,
+                   ]); 
+                }
+            }
+        } */
+
+       /*  return response()->json([
             'message' => 'Third step saved successfully',
-        ], 200);
+        ], 200); */
     }
 
     // Guardar los datos del cuarto paso (datos de contacto)
@@ -214,10 +265,26 @@ class PropertiesController extends Controller
         ], 200);
     }
 
+    public function show($id)
+    {
+        $property = Property::with([ 'media'])
+            ->findOrFail($id);
+        
+        return response()->json($property);
+    }
 
+  /*  public function show($id)
+    {
+       // $user = User::find($id);
+        $vehicle = Vehicle::where('id', $id)->with('brand', 'modelVehicle','imagesVehicle','color','yearVehicle')->first();
+       
 
+        if (!$vehicle) {
+            return response()->json(['message' => 'Vehiculo no encontrado'], 404);
+        }
 
+        return response()->json($vehicle);
 
-
+    }*/
 
 }
