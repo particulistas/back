@@ -65,5 +65,7 @@ Route::group(['prefix' => 'v1'], function () {
     Route::post('/properties/fourth-step', [PropertiesController::class, 'storeFourthStep']);
     Route::post('/properties/media', [PropertiesController::class, 'storeMedia']);
     Route::post('/properties/update-status', [PropertiesController::class, 'updateStatusProperties']);
+    Route::post('/properties/update-status', [PropertiesController::class, 'updateStatusProperties']);
+    Route::get('/properties/{id}', [PropertiesController::class, 'show']);
 
 });
