@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Property extends Model
 {
@@ -56,8 +57,15 @@ class Property extends Model
     {
         return $this->belongsTo(User::class, 'user_id');
     }
-     public function category(): BelongsTo
+ 
+    public function category(): BelongsTo
     {
-        return $this->belongsTo(Category::class, 'category_id');
-    } 
+        return $this->belongsTo(Category::class);
+    }
+
+    public function favoritedBy()
+    {
+        return $this->belongsToMany(User::class, 'favorites');
+    }
+
 }

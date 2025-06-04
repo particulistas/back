@@ -40,7 +40,15 @@ return [
             'driver' => 'passport',
             'provider' => 'users',
         ],
-    ],
+    ], 
+/* 
+    'guards' => [
+        'api' => [
+            'driver' => 'token', // Asegúrate que sea 'token'
+            'provider' => 'users',
+            'hash' => false,
+        ],
+    ], */
 
     /*
     |--------------------------------------------------------------------------

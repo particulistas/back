@@ -10,6 +10,7 @@ use Illuminate\Notifications\Notifiable;
 use Laravel\Passport\HasApiTokens;
 use Illuminate\Contracts\Auth\Access\Authorizable;
 
+
 class User extends Authenticatable
 {
     use HasApiTokens, HasFactory, Notifiable, HasRoles;
@@ -59,4 +60,16 @@ class User extends Authenticatable
     {
         return $this->hasOne(profile::class);
     }
+    public function favorites()
+    {
+        return $this->hasMany(Favorite::class);
+    }
+
+     public function favoriteProperties()
+    {
+        return $this->belongsToMany(Property::class, 'favorites');
+    } 
+
+    
+
 }
