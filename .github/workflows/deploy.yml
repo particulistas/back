@@ -24,6 +24,7 @@ jobs:
         run: |
           ssh -p ${{ secrets.SSH_PORT }} ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} << 'EOF'
             cd /var/www/html/particulistas/back
+            git stash
             git pull origin main
             composer install --no-dev --optimize-autoloader
             php artisan optimize
