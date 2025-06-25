@@ -410,6 +410,19 @@ class PropertiesController extends Controller
         return response()->json($properties);
     }
 
+    public function showAll()
+    {
+       /*  $properties = Property::with(['media', 'category', 'user'])
+                            ->paginate(10); // 10 items por página */
+
+        $properties = Property::with(['media', 'category', 'user'])->get(); // Obtiene todos los registros
+       // $properties = Property::all(); 
+        
+        return response()->json($properties);
+    }
+
+  
+
   /*  public function show($id)
     {
        // $user = User::find($id);
