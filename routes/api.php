@@ -33,6 +33,7 @@ Route::group(['prefix' => 'v1'], function () {
     Route::post('/properties/update-status', [PropertiesController::class, 'updateStatusProperties']);
     Route::get('/properties/{id}', [PropertiesController::class, 'show']);
     Route::get('/properties/user/{user_id}', [PropertiesController::class, 'showByUserId']);
+    Route::get('/properties/all/all', [PropertiesController::class, 'showAll']);
 
     /*** Users ***/
     Route::prefix('users')->group(function () {
