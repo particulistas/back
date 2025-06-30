@@ -32,9 +32,17 @@ class AvatarController extends Controller
             'avatar' => 'required|string',
         ]);
 
+        // Buscar el usuario (usando el ID de la request, no hardcodeado)
+        $user = User::find($request->userId);
+        
+        // Verificar si el usuario existe
+        if (!$user) {
+            return response()->json(['error' => 'Usuario no encontrado'], 404);
+        }
+
         // Actualizar el campo avatar en la tabla profile
-        $user = User::find(53);
-        $user->profile->updateOrCreate(
+       // $user = User::find(53);
+        $user->profile()->updateOrCreate(
             ['user_id' => $user->id],
             ['avatar' => $request->avatar]
         );
