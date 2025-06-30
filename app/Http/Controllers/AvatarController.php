@@ -34,7 +34,7 @@ class AvatarController extends Controller
 
         // Actualizar el campo avatar en la tabla profile
         $user = User::find(53);
-        $user->profile()->updateOrCreate(
+        $user->profile->updateOrCreate(
             ['user_id' => $user->id],
             ['avatar' => $request->avatar]
         );
