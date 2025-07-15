@@ -25,6 +25,9 @@ use Carbon\Carbon;
 use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\Profile\UserController;
 
+use App\Models\BlockedUser;
+use Illuminate\Http\JsonResponse;
+
 
 class UserController extends Controller
 {
@@ -126,4 +129,52 @@ class UserController extends Controller
 
         }
     }
+
+    public function getBlockedUsers(): JsonResponse
+    {
+        $blockedUsers = User::whereIn('id', function($query) {
+            $query->select('blocked_user_id')
+                  ->from('blocked_users')
+                  ->where('user_id', Auth::id());
+        })->get(['id', 'name', 'email']);
+
+        return response()->json([
+            'success' => true,
+            'data' => $blockedUsers
+        ]);
+    }
+
+    public function blockUser(User $user): JsonResponse
+    {
+        if ($user->id === Auth::id()) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Cannot block yourself'
+            ], 400);
+        }
+
+        BlockedUser::firstOrCreate([
+            'user_id' => Auth::id(),
+            'blocked_user_id' => $user->id
+        ]);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'User blocked successfully'
+        ]);
+    }
+
+    public function unblockUser( $user): JsonResponse
+    {
+        BlockedUser::where('user_id', Auth::id())
+            ->where('blocked_user_id', $user)
+            ->delete();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'User unblocked successfully'
+        ]);
+    }
+
+
 }
