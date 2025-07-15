@@ -9,6 +9,7 @@ use Spatie\Permission\Traits\HasRoles;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Passport\HasApiTokens;
 use Illuminate\Contracts\Auth\Access\Authorizable;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 
 class User extends Authenticatable
@@ -69,6 +70,16 @@ class User extends Authenticatable
     {
         return $this->belongsToMany(Property::class, 'favorites');
     } 
+
+    public function tenants(): HasMany
+    {
+        return $this->hasMany(Tenant::class, 'user_id');
+    }
+
+     public function notifications(): HasMany
+    {
+        return $this->hasMany(Notification::class, 'user_id');
+    }
 
     
 

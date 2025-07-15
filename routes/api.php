@@ -8,6 +8,9 @@ use App\Http\Controllers\Utilities\CategoryController;
 use App\Http\Controllers\AvatarController;
 use App\Http\Controllers\Properties\PropertiesController;
 use App\Http\Controllers\FavoriteController;
+use App\Http\Controllers\TenantController;
+use App\Http\Controllers\NotificationController;
+use App\Http\Controllers\ConversationController;
 
 Route::group(['prefix' => 'v1'], function () {
     
@@ -62,5 +65,62 @@ Route::group(['prefix' => 'v1'], function () {
         Route::delete('/favorites/{id}', [FavoriteController::class, 'destroy']);
         Route::get('/is-favorite/{id}', [FavoriteController::class, 'checkFavorite']);
    // });
+
+   // Obtener tenant por user_id
+    Route::get('/tenants', [TenantController::class, 'getByUserId']);
+    // Operaciones CRUD para tenants
+    Route::apiResource('tenants', TenantController::class)->except(['index']);
+
+  /*   Route::middleware('auth:api')->group(function () {
+        Route::get('/notifications', [NotificationController::class, 'index']);
+        Route::post('/notifications/{id}/read', [NotificationController::class, 'markAsRead']);
+        Route::get('/notifications/unread-count', [NotificationController::class, 'unreadCount']);
+    }); */
+
+    Route::middleware('auth:api')->group(function () {
+        Route::get('/notifications', [NotificationController::class, 'index']);
+        Route::post('/notifications', [NotificationController::class, 'store']);
+        Route::post('/notifications/{id}/read', [NotificationController::class, 'markAsRead']);
+        Route::delete('/notifications/{notification}', [NotificationController::class, 'destroy']);
+        Route::post('/notifications/delete-all', [NotificationController::class, 'destroyAll']);
+
+    });
+
+   // Route::middleware('auth:api')->group(function () {
+        // Conversations
+        Route::get('/conversations', [ConversationController::class, 'index']);
+        Route::get('/conversations/{conversation}', [ConversationController::class, 'show']);
+        Route::get('/conversations/{conversation}/messages', [ConversationController::class, 'getMessages']);
+        Route::post('/conversations/{conversation}/messages', [ConversationController::class, 'sendMessage']);
+        Route::post('/conversations/{conversation}/read', [ConversationController::class, 'markAsRead']);
+        Route::post('/conversations/{conversation}/favorite', [ConversationController::class, 'toggleFavorite']);
+        Route::post('/conversations/{conversation}/typing', [ConversationController::class, 'typing']);
+        
+        // Users
+        Route::get('/blocked-users', [UserController::class, 'getBlockedUsers']);
+        Route::post('/users/{user}/block', [UserController::class, 'blockUser']);
+        Route::post('/users/{user}/unblock', [UserController::class, 'unblockUser']);
+  //  });
+
+        Route::post('/pusher/auth', function (Request $request) {
+            $user = auth()->user();
+            
+            if (!$user) {
+                return response()->json(['message' => 'Unauthorized'], 401);
+            }
+
+            $pusher = new Pusher\Pusher(
+                config('broadcasting.connections.pusher.key'),
+                config('broadcasting.connections.pusher.secret'),
+                config('broadcasting.connections.pusher.app_id'),
+                [
+                    'cluster' => config('broadcasting.connections.pusher.options.cluster'),
+                    'encrypted' => true
+                ]
+            );
+
+            return $pusher->socket_auth($request->channel_name, $request->socket_id);
+        });//->middleware('auth:sanctum'); 
+        // // Ajusta el middleware según tu sistema de autenticación
 
 });

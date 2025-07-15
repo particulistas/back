@@ -68,4 +68,15 @@ class Property extends Model
         return $this->belongsToMany(User::class, 'favorites');
     }
 
+
+    public function conversations(): HasMany
+    {
+        return $this->hasMany(Conversation::class);
+    }
+
+    public function owner(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'user_id');
+    }
+
 }
