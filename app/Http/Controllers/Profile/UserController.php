@@ -149,7 +149,7 @@ class UserController extends Controller
         if ($user->id === Auth::id()) {
             return response()->json([
                 'success' => false,
-                'message' => 'Cannot block yourself'
+                'message' => 'No puedes bloquearte'
             ], 400);
         }
 

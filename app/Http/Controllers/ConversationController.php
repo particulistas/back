@@ -10,10 +10,11 @@ use App\Events\UserTyping;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Auth;
+use App\Models\ConversationFavorite;
 
 class ConversationController extends Controller
 {
-    public function index2(): JsonResponse
+/*     public function index2(): JsonResponse
     {
        // $userId = Auth::id();
          $userId = auth()->user()->id;
@@ -25,14 +26,7 @@ class ConversationController extends Controller
         //$conversations = Conversation::where('user_id','=', $userId)->get();
 //$conversations = Conversation::all();
 
-      
 
-   /*   ->with([
-                  'media' => fn($q) => $q->orderBy('postition'),
-                  'category',
-                  'user.profile' // Si necesitas datos del perfil del usuario
-              ])
- */
 
         $conversations = Conversation::with([
            // 'property:id,address,sale_price,user_id',
@@ -70,55 +64,56 @@ class ConversationController extends Controller
             'success' => true,
             'data' => $conversations
         ]);
-    }
+    } */
 
     public function index(): JsonResponse
-{
-    //$userId = auth()->user()->id;
-    $userId = Auth::id();
+    {
+        //$userId = auth()->user()->id;
+        $userId = Auth::id();
 
-    $conversations = Conversation::with([
-        'property:id,transaction,address,sale_price,rental_price,user_id,category_id',
-        'property.category:id,name', // Cargar la categoría
-        'property.owner:id,name,email',
-        'lastMessage:id,content,created_at,sender_id',
-        'lastMessage.sender:id,name'
-    ])
-    ->where(function($query) use ($userId) {
-        $query->where('user_id', $userId)
-              ->orWhere('participant_id', $userId);
-    })
-    ->withCount(['messages as unread_count' => function($query) use ($userId) {
-        $query->where('sender_id', '!=', $userId)
-              ->where('is_read', false);
-    }])
-    ->orderBy('updated_at', 'desc')
-    ->get()
-    ->map(function($conversation) use ($userId) {
-        // Verificar si la propiedad existe antes de acceder a sus relaciones
-        if ($conversation->property) {
-            // Cargar la categoría si no se cargó automáticamente
-            if (!$conversation->property->relationLoaded('category')) {
-                $conversation->property->load('category:id,name');
+        $conversations = Conversation::with([
+            'property:id,transaction,address,sale_price,rental_price,user_id,category_id',
+            'property.category:id,name', // Cargar la categoría
+            'property.media',
+            'property.owner:id,name,email',
+            'lastMessage:id,content,created_at,sender_id',
+            'lastMessage.sender:id,name'
+        ])
+        ->where(function($query) use ($userId) {
+            $query->where('user_id', $userId)
+                ->orWhere('participant_id', $userId);
+        })
+        ->withCount(['messages as unread_count' => function($query) use ($userId) {
+            $query->where('sender_id', '!=', $userId)
+                ->where('is_read', false);
+        }])
+        ->orderBy('updated_at', 'desc')
+        ->get()
+        ->map(function($conversation) use ($userId) {
+            // Verificar si la propiedad existe antes de acceder a sus relaciones
+            if ($conversation->property) {
+                // Cargar la categoría si no se cargó automáticamente
+                if (!$conversation->property->relationLoaded('category')) {
+                    $conversation->property->load('category:id,name');
+                }
             }
-        }
-        
-        $conversation->other_user = $conversation->user_id === $userId 
-            ? $conversation->participant 
-            : $conversation->user;
-        
-        $conversation->is_favorite = $conversation->favorites()
-            ->where('user_id', $userId)
-            ->exists();
             
-        return $conversation;
-    });
+            $conversation->other_user = $conversation->user_id === $userId 
+                ? $conversation->participant 
+                : $conversation->user;
+            
+            $conversation->is_favorite = $conversation->favorites()
+                ->where('user_id', $userId)
+                ->exists();
+                
+            return $conversation;
+        });
 
-    return response()->json([
-        'success' => true,
-        'data' => $conversations
-    ]);
-}
+        return response()->json([
+            'success' => true,
+            'data' => $conversations
+        ]);
+    }
 
     public function show(Conversation $conversation): JsonResponse
     {
@@ -127,6 +122,7 @@ class ConversationController extends Controller
         $conversation->load([
             'property:id,transaction,address,sale_price,rental_price,user_id,category_id',
             'property.category:id,name', 
+            'property.media',
             'property.owner:id,name,email',
             'user:id,name,email,is_online',
             'participant:id,name,email,is_online'
@@ -205,18 +201,32 @@ class ConversationController extends Controller
         ]);
     }
 
+   //public function toggleFavorite(Conversation $conversation): JsonResponse
     public function toggleFavorite( $conversation): JsonResponse
     {
        // $this->authorize('participate', $conversation);
         
         $userId = Auth::id();
-        $favorite = $conversation->favorites()->where('user_id', $userId)->first();
+       // $favorite = $conversation->favorites()->where('user_id', $userId)->first();
+        $favorite = ConversationFavorite::where('conversation_id', $conversation)->where('user_id', $userId)->first();
 
         if ($favorite) {
             $favorite->delete();
             $isFavorite = false;
         } else {
-            $conversation->favorites()->create(['user_id' => $userId]);
+           // $conversation->favorites()->create(['user_id' => $userId]);
+            // Crear el favorito incluyendo explícitamente el conversation_id
+           //$conversation->favorites()->create([
+          /*   $conversation->favorites()->create([
+                'user_id' => $userId,
+                'conversation_id' => $conversation->id // Añade esta línea
+            ]); */
+
+            ConversationFavorite::create([
+                'user_id' => $userId,
+                'conversation_id' => $conversation // Añade esta línea
+            ]);
+
             $isFavorite = true;
         }
 
